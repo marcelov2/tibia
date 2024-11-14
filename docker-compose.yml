@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  tibia_canary_db:
+    container_name: tibia_canary_db
+    image: mariadb
+    env_file: ~/Canary/docker/db.env
+    restart: unless-stopped
+    volumes:
+      - ~/Canary/data/db:/var/lib/mysql
+    networks:
+      - opentibia_network
+
+  tibia_canary_server:
+    container_name: tibia_canary_server
+    image: koalan/opentibiabr_canary:latest
+    restart: unless-stopped
+    depends_on:
+      - tibia_canary_db
+    volumes:
+      - ~/Canary/data/server/data:/canary
+      - ~/Canary/data/server/bin/canary:/bin/canary
+    ports:
+      - 7171:7171
+      - 7172:7172
+    networks:
+      - opentibia_network
+
+networks:
+  opentibia_network:
+    driver: bridge

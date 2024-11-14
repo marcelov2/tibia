@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  tibia_canary_db:
+    image: mariadb
+    env_file: ./db.env
+    volumes:
+      - /path/to/db:/var/lib/mysql
+    restart: unless-stopped
+
+  tibia_canary_server:
+    image: koalan/opentibiabr_canary:latest
+    depends_on:
+      - tibia_canary_db
+    volumes:
+      - /path/to/server/data:/canary
+      - /path/to/server/bin/canary:/bin/canary
+    ports:
+      - "7171:7171"
+      - "7172:7172"
+    restart: unless-stopped
